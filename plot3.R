@@ -30,7 +30,7 @@ if(!file.exists(unzippedFile))
   print(zipfile)
   print(unzippedFile)
   unzip(zipfile, files = unzippedFile, list = FALSE, overwrite = TRUE,
-          junkpaths = TRUE, exdir = ".", unzip = "internal",setTimes = FALSE)  
+        junkpaths = TRUE, exdir = ".", unzip = "internal",setTimes = FALSE)  
 }
 
 ## reading data
@@ -43,11 +43,20 @@ data$Date <- as.Date(data$Date, "%d/%m/%Y")
 validDates <- c(as.Date("01/02/2007", "%d/%m/%Y"), as.Date("02/02/2007", "%d/%m/%Y"))
 data.filtered <- filter(data, Date %in% validDates)
 data.filtered$Global_active_power <- as.numeric(data.filtered$Global_active_power)
+#data.filtered <- transform(data.filtered, dow=as.factor(format(data.filtered$Date, format="%a")))
+data.filtered <- transform(data.filtered, 
+                           tm2=strptime(paste(data.filtered$Date, data.filtered$Time), format="%Y-%m-%d %H:%M:%S"))
 
 ## creating plot1
-print("creating plot1.png")
-png(file ="plot1.png", bg="white", width=480, height=480)
-with(data.filtered, hist(Global_active_power, main ="Global Active Power", col="orangered", xlab="Global Active Power (kilowatts)"))
+print("creating plot3.png")
+
+png(file ="plot3.png", bg="white", width=480, height=480)
+
+plot(data.filtered$Sub_metering_1 ~ data.filtered$tm2, type="l",ylab="Energy sub metering",xlab="")
+lines(data.filtered$Sub_metering_2 ~ data.filtered$tm2, type="l",col="red")
+lines(data.filtered$Sub_metering_3 ~ data.filtered$tm2, type="l",col="blue")
+legend("topright", legend=c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), col = c("black","red","blue"), cex=0.75, lty="solid")
+
 dev.off()
 
 Sys.setlocale("LC_TIME", user_lang)

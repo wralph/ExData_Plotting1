@@ -1,3 +1,5 @@
+user_lang <- Sys.getlocale("LC_TIME")
+Sys.setlocale("LC_TIME", "English")
 
 if (!require("data.table")) {
   install.packages("data.table")
@@ -49,10 +51,8 @@ data.filtered <- transform(data.filtered,
 print("creating plot1.png")
 
 png(file ="plot2.png", bg="white", width=480, height=480)
-par(mar = c(3,4,4,2))
-##with(data.filtered, hist(Global_active_power, dow, main ="Global Active Power", col="orangered", xlab="Global Active Power (kilowatts)"))
-with(data.filtered, plot(Global_active_power ~ tm2, main ="Global Active Power", col="black", ylab="Global Active Power (kilowatts)", type="l"))
+#par(mar = c(3,4,4,2))
+with(data.filtered, plot(Global_active_power ~ tm2, col="black", ylab="Global Active Power (kilowatts)", xlab="", type="l"))
 dev.off()
 
-
-as.factor(format(data.filtered$Date, format="%a"))
+Sys.setlocale("LC_TIME", user_lang)
